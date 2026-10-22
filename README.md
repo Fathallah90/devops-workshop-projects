@@ -20,7 +20,7 @@ Building on my experience in System Engineering, Windows/Linux administration, v
 | # | Project | Status |
 |---|---------|--------|
 
-| 09 | Lecture Projects
+| # | Lecture Projects
 |---|-------------------
 | 01 | Project 01 — Building a Multi-Tier Java Web Application On-Premises | In progress |
 | 02 | Project 02 — Enterprise Infrastructure Monitoring with Nagios and Zabbix | Not started |
@@ -33,7 +33,7 @@ Building on my experience in System Engineering, Windows/Linux administration, v
 | 09 | Project 09 — Building and Managing Microservices with OpenShift Service Mesh | Not started |
 
 
-| 08 | Recorded Projects
+| # | Recorded Projects
 |---|--------------------
 | 01 | Project 01 — Automated Provisioning of a Multi-Tier Java Web App via Shell Scripting | started |
 | 02 | Project 02 — Proactive Infrastructure Monitoring with Zabbix | Not started |
@@ -44,7 +44,7 @@ Building on my experience in System Engineering, Windows/Linux administration, v
 | 07 | Project 07 — Enterprise Autvomated Build & Containerization Pipeline using Jenkins & GitHub Actions | Not started |
 | 08 | Project 08 — GitOps-Driven Continuous Deployment for Microservices using ArgoCD & Kubernetes | Not started |
 
-| 08 | Case Study Projects
+| # | Case Study Projects
 |---|--------------------
 | 01 | Project 01 — End-to-End Enterprise AWS Environment Provisioning using Terraform and Ansible | started |
 | 02 | Project 02 — Enterprise Docker Infrastructure Security, Vulnerability Scanning & Isolation | Not started |
