@@ -1,76 +1,88 @@
 # DevOps Workshop — 25 Hands-On Projects
 
-This repository documents my hands-on journey toward becoming a DevOps Engineer through 25 practical projects.
+A practical portfolio documenting my journey from System Engineering toward DevOps Engineering through hands-on infrastructure, automation, cloud, containerization, CI/CD, and DevSecOps projects.
 
-Building on my experience in System Engineering, Windows/Linux administration, virtualization, networking, and infrastructure operations, I am developing practical skills in automation, CI/CD, containers, Infrastructure as Code, and cloud technologies.
+Building on my experience in Windows and Linux administration, networking, virtualization, backup, and infrastructure operations, I am developing skills in modern DevOps practices and cloud-native technologies.
 
 ## Learning Objectives
 
-- Strengthen Git and GitHub workflows
-- Automate infrastructure and operational tasks
-- Build and manage Docker containers
-- Implement CI/CD pipelines
-- Practice Infrastructure as Code with Terraform
-- Automate configuration management with Ansible
-- Deploy and manage applications on Kubernetes
-- Develop practical cloud and DevOps skills
+- Practice Git and GitHub workflows.
+- Automate infrastructure provisioning and configuration.
+- Build, containerize, and deploy multi-tier applications.
+- Implement CI/CD and GitOps workflows.
+- Manage infrastructure using Terraform and Ansible/AWX.
+- Deploy and operate Kubernetes workloads.
+- Explore AWS, GKE, OpenShift, and cloud-native services.
+- Improve security, monitoring, observability, and disaster recovery.
 
-## Project Tracker
+## Project Portfolio
+
+### 1. Lecture Projects — 9 Projects
 
 | # | Project | Status |
-|---|---------|--------|
+|---|---|---|
+| 01 | Multi-Tier Java Web Application On-Premises | In progress |
+| 02 | Enterprise Monitoring with Nagios and Zabbix | Not started |
+| 03 | Profile Web Application on AWS | Not started |
+| 04 | AWX Ansible Automation Platform | Not started |
+| 05 | Containerizing a Multi-Tier Application | Not started |
+| 06 | Multi-Tier Web Application on Kubernetes | In progress |
+| 07 | Secure Multi-Tier AWS Infrastructure with Terraform | Not started |
+| 08 | Jenkins, GitHub Actions and Argo CD Delivery Pipelines | Not started |
+| 09 | OpenShift Service Mesh | Not started |
 
-| # | Lecture Projects
-|---|-------------------
-| 01 | Project 01 — Building a Multi-Tier Java Web Application On-Premises | In progress |
-| 02 | Project 02 — Enterprise Infrastructure Monitoring with Nagios and Zabbix | Not started |
-| 03 | Project 03 — Deploying a Profile Web Application on AWS (IaaS & Cloud-Native Services) | Not started |
-| 04 | Project 04 — Building and Configuring the AWX Ansible Automation Management Platform | Not started |
-| 05 | Project 05 — Containerizing a Multi-Tier Application | Not started |
-| 06 | Project 06 — Deploying a Multi-Tier Web Application on Kubernetes | started |
-| 07 | Project 07 — Terraform AWS Workshop: Building a Secure, Scalable Multi-Tier Infrastructure | Not started |
-| 08 | Project 08 — End-to-End Delivery Pipelines: Jenkins, GitHub Actions & ArgoCD | Not started |
-| 09 | Project 09 — Building and Managing Microservices with OpenShift Service Mesh | Not started |
+### 2. Recorded Projects — 8 Projects
 
+| # | Project | Status |
+|---|---|---|
+| 01 | Shell Automation for a Multi-Tier Java Application | In progress |
+| 02 | Proactive Infrastructure Monitoring with Zabbix | Not started |
+| 03 | AWS EC2 and Route 53 Cloud Migration | Not started |
+| 04 | AWX Deployment on Kubernetes | Not started |
+| 05 | Kubernetes, AWX, Helm and Telemetry Stack | Not started |
+| 06 | AWS Multi-Tier Infrastructure with Terraform | In progress |
+| 07 | Automated Build and Containerization with Jenkins and GitHub Actions | Not started |
+| 08 | GitOps Continuous Deployment with Argo CD and Kubernetes | Not started |
 
-| # | Recorded Projects
-|---|--------------------
-| 01 | Project 01 — Automated Provisioning of a Multi-Tier Java Web App via Shell Scripting | started |
-| 02 | Project 02 — Proactive Infrastructure Monitoring with Zabbix | Not started |
-| 03 | Project 03 — Cloud Migration of a Multi-Tier Java Application Using AWS EC2 and Route 53 | Not started |
-| 04 | Project 04 — Enterprise Ansible Automation Platform: AWX Deployment on Kubernetes | Not started |
-| 05 | Project 05 — Cloud-Native Kubernetes Infrastructure Orchestration with AWX and Helm Telemetry Stack | Not started |
-| 06 | Project 06 — Automated AWS PaaS/IaaS Multi-Tier Infrastructure Deployment via Terraform | started |
-| 07 | Project 07 — Enterprise Autvomated Build & Containerization Pipeline using Jenkins & GitHub Actions | Not started |
-| 08 | Project 08 — GitOps-Driven Continuous Deployment for Microservices using ArgoCD & Kubernetes | Not started |
+### 3. Case Study Projects — 8 Projects
 
-| # | Case Study Projects
-|---|--------------------
-| 01 | Project 01 — End-to-End Enterprise AWS Environment Provisioning using Terraform and Ansible | started |
-| 02 | Project 02 — Enterprise Docker Infrastructure Security, Vulnerability Scanning & Isolation | Not started |
-| 03 | Project 03 — Enterprise Google Kubernetes Engine (GKE) Application Orchestration & Monitoring | Not started |
-| 04 | Project 04 — Securing Kubernetes Workloads via Kyverno Policy Enforcement & Observability | Not started |
-| 05 | Project 05 — Enterprise Kubernetes Disaster Recovery: Cluster Backup and Restoration via Velero & AWS S3 | Not started |
-| 06 | Project 06 — Enterprise DevSecOps Secrets Management with HashiCorp Vault and Kubernetes | started |
-| 07 | Project 07 — Enterprise Kubernetes Service Mesh Architecture with Istio and AWS EKS | Not started |
-| 08 | Project 08 — Secure Enterprise Software Delivery Pipeline using Jenkins, SonarQube & Nexus | Not started |
+| # | Project | Status |
+|---|---|---|
+| 01 | Enterprise AWS Provisioning with Terraform and Ansible | In progress |
+| 02 | Docker Security and Vulnerability Scanning | Not started |
+| 03 | GKE Application Orchestration and Monitoring | Not started |
+| 04 | Kubernetes Policy Enforcement with Kyverno | Not started |
+| 05 | Kubernetes Disaster Recovery with Velero and AWS S3 | Not started |
+| 06 | Secrets Management with HashiCorp Vault and Kubernetes | In progress |
+| 07 | Istio Service Mesh with AWS EKS | Not started |
+| 08 | Secure Delivery Pipeline with Jenkins, SonarQube and Nexus | Not started |
 
-Status options: Not started, In progress, Completed.
+## Documentation Standards
 
-## How Each Project Is Documented
+Each project will document, where applicable:
 
-Every project should include:
-- Problem statement and objectives
-- Architecture or workflow
-- Tools and technologies
-- Implementation steps
-- Configuration files and scripts
+- Objectives and problem statement
+- Architecture and workflow
+- Prerequisites and technologies
+- Implementation and deployment steps
+- Configuration files and automation scripts
 - Testing and validation
-- Challenges and solutions
-- Lessons learned
+- Troubleshooting and lessons learned
+- Screenshots, diagrams, and results
+- Cleanup instructions and cost considerations for cloud resources
+
+## Technology Stack
+
+Linux | Shell Scripting | Git | Docker | Kubernetes | Helm | Ansible | AWX | Terraform | AWS | Jenkins | GitHub Actions | Argo CD | Prometheus | Grafana | Zabbix | Nagios | OpenShift | GKE | Kyverno | Velero | HashiCorp Vault | Istio | SonarQube | Nexus
 
 ## About Me
 
-I am a System Engineer expanding my infrastructure and automation experience toward a DevOps Engineer role.
+I am a System Engineer with experience in enterprise IT infrastructure, Windows and Linux administration, networking, virtualization, storage, backup, and disaster recovery.
 
-My focus is on practical projects that demonstrate automation, repeatability, reliability, and modern infrastructure practices.
+I am expanding my expertise toward DevOps Engineering, focusing on automation, Infrastructure as Code, CI/CD, container orchestration, cloud platforms, and secure software delivery.
+
+**Career objective:** Pursue a DevOps Engineer role where I can combine my infrastructure experience with modern automation and cloud-native engineering practices.
+
+---
+
+*This repository is a work in progress. Project documentation and implementation details will be added as each project advances.*
