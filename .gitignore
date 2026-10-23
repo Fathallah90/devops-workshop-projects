@@ -1,0 +1,15 @@
+# Vagrant state directories anywhere in the repository
+**/.vagrant/
+
+# Secrets
+.env
+*.pem
+*.key
+
+# Logs
+*.log
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*

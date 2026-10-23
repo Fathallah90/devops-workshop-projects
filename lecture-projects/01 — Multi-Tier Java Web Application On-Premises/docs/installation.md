@@ -7,10 +7,11 @@ Make sure that the vagrant host manager plugin is isntalled usig nthe below comm
 
 `vagrant plugin install vagrant-hostmanager`
 
-# Prepare the Vagrantfile
+## Prepare VMs
+### Prepare the Vagrantfile
 Check it in the Project Folder
 
-# Prepare VMs using Vagrant
+### Prepare VMs using Vagrant
 1. go the to the path which contain the vagrantfile
 2. Create the VMs using the below Command
 `vagrant up`
@@ -19,6 +20,5 @@ Check it in the Project Folder
 > [!NOTE]
 > Bringing up all the vm’s may take a long time based on various factors, If vm setup stops in the middle run “vagrant up” command again.
 
-> [!INFO]
+> [!NOTE]
 > All the vm’s hostname and /etc/hosts file entries will be automatically updated.
-

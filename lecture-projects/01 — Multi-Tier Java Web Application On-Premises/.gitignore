@@ -1,0 +1,18 @@
+# Vagrant
+.vagrant/
+
+# Secrets and environment files
+.env
+.env.*
+!.env.example
+
+# Private keys and certificates
+*.pem
+*.key
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
