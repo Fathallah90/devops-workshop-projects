@@ -31,15 +31,17 @@ fi
 echo "WAR build successful."
 
 # Stop Tomcat and Delete Existing WAR on Tomcat server
-sshpass -p 'vagrant' ssh -o StrictHostKeyChecking=accept-new vagrant@app01 'sudo systemctl stop tomcat'
-sshpass -p 'vagrant' ssh -o StrictHostKeyChecking=accept-new vagrant@app01 'sudo  rm -rf /usr/local/tomcat/webapps/ROOT*'
+# sudo sshpass -p 'vagrant' ssh -o StrictHostKeyChecking=accept-new vagrant@app01 'sudo systemctl stop tomcat'
+# sudo sshpass -p 'vagrant' ssh -o StrictHostKeyChecking=accept-new vagrant@app01 'sudo  rm -rf /usr/local/tomcat/webapps/ROOT*'
 
 # Copy WAR to Tomcat server
-sshpass -p 'vagrant' scp target/vprofile-v2.war vagrant@app01:/usr/local/tomcat/webapps/ROOT.war
+sshpass -p 'vagrant' scp target/vprofile-v2.war vagrant@app01:/tmp
+#sshpass -p 'vagrant' scp target/vprofile-v2.war vagrant@app01:/usr/local/tomcat/webapps/ROOT.war
+sshpass -p 'vagrant' ssh vagrant@app01 'sudo mv /tmp/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war'
 
 # Start Tomcat server
-sshpass -p 'vagrant' ssh -o StrictHostKeyChecking=accept-new vagrant@app01 'sudo systemctl start tomcat'
-sshpass -p 'vagrant' ssh -o StrictHostKeyChecking=accept-new vagrant@app01 'sudo chown tomcat.tomcat /usr/local/tomcat/webapps -R'
+# sudo sshpass -p 'vagrant' ssh -o StrictHostKeyChecking=accept-new vagrant@app01 'sudo systemctl start tomcat'
+# sudo sshpass -p 'vagrant' ssh -o StrictHostKeyChecking=accept-new vagrant@app01 'sudo chown tomcat.tomcat /usr/local/tomcat/webapps -R'
 sshpass -p 'vagrant' ssh -o StrictHostKeyChecking=accept-new vagrant@app01 'sudo systemctl restart tomcat'
 
 echo "WAR copied successfully to Tomcat."

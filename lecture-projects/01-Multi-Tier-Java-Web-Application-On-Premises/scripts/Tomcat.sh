@@ -118,3 +118,6 @@ else
 	journalctl -u tomcat -n 30 --no-pager
 	exit 1
 fi
+sudo chown tomcat.tomcat /usr/local/tomcat/webapps -R
+cd /usr/local/tomcat/webapps/
+sudo rm -rf ROOT*
