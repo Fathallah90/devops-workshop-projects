@@ -1,5 +1,6 @@
 # Vagrant
 .vagrant/
+vagrant_boxes/
 
 # Secrets and environment files
 .env
@@ -16,3 +17,6 @@
 # Temporary files
 *.tmp
 *.swp
+
+CentOS_9
+CentOS_9_v2

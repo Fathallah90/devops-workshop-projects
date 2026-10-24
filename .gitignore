@@ -13,3 +13,6 @@
 **/.terraform/
 *.tfstate
 *.tfstate.*
+
+# Ruby
+*.ruby-version
