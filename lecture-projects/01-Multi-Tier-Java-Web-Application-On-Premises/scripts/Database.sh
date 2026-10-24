@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
+
 set -Eeuo pipefail
+# is commonly used at the beginning of Bash scripts to make them safer and easier to troubleshoot.
+# It enables three main options: -E, -e, -u, and -o pipefail.
+# -e — Exit if a command fails
+# -u — Treat undefined variables as errors
+# -o pipefail — Detect failures inside pipelines
+# -E — Inherit error traps in functions and subshells
 
 # ============================================================
 # MariaDB - Unattended Vagrant Provisioning
@@ -34,6 +41,8 @@ die() {
 
 # Require root privileges
 [[ $EUID -eq 0 ]] || die "Run this script as root."
+
+# EUID stands for Effective User ID.
 
 # Validate configuration
 for variable in MARIADB_ROOT_PASSWORD MARIADB_PASSWORD; do
