@@ -207,6 +207,112 @@ Default login credentials:
 
 **Security Note:** Change the default administrator password immediately after the first login.
 
+## Install Zabbix Agent on End Devices
+
+Download and install Zabbix repository
+
+`wget https://repo.zabbix.com/zabbix/7.4/release/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.4+ubuntu22.04_all.deb`
+
+install
+
+`sudo dpkg -i zabbix-release_latest_7.4+ubuntu22.04_all.deb`
+
+Update package information:
+
+`sudo apt update`
+
+Verify the available Agent 2 version:
+
+`apt-cache policy zabbix-agent2`
+
+install agent 2
+
+`sudo apt install zabbix-agent2 -y`
+
+Verify:
+
+`zabbix_agent2 --version`
+
+Configure the agent
+
+sudo vim /etc/zabbix/zabbix_agent2.conf
+
+```bash
+
+Server=ZABBIX_SERVER_IP
+ServerActive=ZABBIX_SERVER_IP
+Hostname=web01
+
+ListenPort=10050
+ListenIP=0.0.0.0
+
+LogFile=/var/log/zabbix/zabbix_agent2.log
+LogFileSize=10
+```
+
+Start the service
+
+```bash
+sudo systemctl enable --now zabbix-agent2
+sudo systemctl status zabbix-agent2
+```
+
+Verify monitoring
+
+```bash
+sudo ss -tulpn | grep 10050
+zabbix_agent2 -t agent.ping
+zabbix_agent2 -t system.cpu.load
+zabbix_agent2 -t vm.memory.size[total]
+```
+
+
+## Register Endpoint in Zabbix Server
+
+**Validate Configuration First**
+
+`sudo grep -E '^(Server|ServerActive|Hostname|ListenPort|ListenIP)=' /etc/zabbix/zabbix_agent2.conf`
+
+**Verify connectivity between Ubuntu and Zabbix Server**
+
+`nc -zv Zabbix_Server 10051`
+
+i got error here, which i found that the zabbix port not running on zabbix server itself
+
+**Check zabbix service log**
+`sudo tail -n 100 /var/log/zabbix/zabbix_server.log`
+
+i found the below error
+
+```bash
+  6811:20261103:162702.988 database is down: reconnecting in 10 seconds
+  6811:20261103:162713.008 [Z3001] connection to database 'zabbix' failed: [0] FATAL:  Ident authentication failed for user "zabbix"
+```
+
+**Check the Status of Postgres service**
+
+**make sure that the /var/lib/pgsql/data/pg_hba.conf is configured as we did**
+
+**make sure the database parameters is correct in /etc/zabbix/zabbix_server.conf**
+
+then restart both postgress and zabbix
+
+i got another issue while trying adding host from the zabbix dashboard
+
+`Cannot inherit item with key "system.sw\.os" of template "Linux by Zabbix agent" to host "web01", because a host interface of type "Agent" is required.`
+
+the meaning of this error because i trying to use ready template of metrices while this template contain passive agent item which require to add the host with interface IP to communicate with it
+
+**Important: Passive vs. active checks**
+
+- Linux by Zabbix agent: Uses passive checks. The Zabbix server connects to Client:10050.
+- Linux by Zabbix agent active: Uses active checks. The agent connects to Zabbix:10051.
+
+**What is the difference between zabbix agent 1 and zabbix agent 2**
+
+- zabbix agent 2 is the newer version of zabbix agent 1
+- zabbix agent 2 written in Go langauage while zabbix agent 1 written in C
+- zabbix agent 2 is plugin based, which mean each system need monitor has a plugin
 ---
 
 # 2. Nagios
@@ -631,6 +737,282 @@ systemctl enable nagios.service
 ```bash
 systemctl disable nagios.service
 ```
+
+Download and install NCPA
+First, update Ubuntu:
+
+```bash
+sudo apt update
+sudo apt upgrade -y
+sudo apt install -y wget curl
+```
+Recommended method: Install using the Nagios repository
+I recommend this method because future updates can be managed through apt.
+
+```bash
+# Add Nagios repository
+echo "deb https://repo.nagios.com/deb/$(lsb_release -cs) /" \
+  | sudo tee /etc/apt/sources.list.d/nagios.list
+
+# Install repository signing key
+sudo apt install -y curl gnupg
+
+curl -fsSL https://repo.nagios.com/GPG-KEY-NAGIOS-V3 \
+  | sudo gpg --dearmor -o /usr/share/keyrings/nagios-archive-keyring.gpg
+```
+Configure the repository to use the key:
+
+```bash
+echo "deb [signed-by=/usr/share/keyrings/nagios-archive-keyring.gpg] https://repo.nagios.com/deb/$(lsb_release -cs) /" \
+  | sudo tee /etc/apt/sources.list.d/nagios.list
+```
+
+Install NCPA:
+
+```bash
+sudo apt update
+sudo apt install -y ncpa
+```
+
+Configure NCPA
+
+```bash
+sudo vim /usr/local/ncpa/etc/ncpa.cfg
+```
+Find the [api] section:
+
+```bash
+[api]
+community_string = mytoken
+```
+Change the default token to a strong password, for example:
+
+```bash
+[api]
+community_string = Nagios100@@100n
+```
+
+Start and enable NCPA
+
+```bash
+sudo systemctl list-units --type=service | grep ncpa
+```
+
+Restart the Service
+
+```bash
+sudo systemctl restart ncpa
+sudo systemctl enable ncpa
+sudo ss -lntp | grep 5693
+```
+
+You should see NCPA listening on TCP port 5693.
+
+Test the NCPA API locally
+
+`curl -k "https://127.0.0.1:5693/api?token=Nagios100@@100n"`
+
+Access NCPA Web Interface
+
+`https://UBUNTU_SERVER_IP:5693`
+
+
+### Integrating Client to Nagios Core
+
+Note: to integrate nagios core with hosts you need python script to install NCPA plugin on nagios core, nagios use this plugin to communicate with NCPA API.
+
+let's install it
+
+```bash
+cd /tmp
+wget https://assets.nagios.com/downloads/ncpa/check_ncpa.tar.gz
+tar -xzf check_ncpa.tar.gz
+```
+
+Copy the plugin into the Nagios plugins directory:
+
+```bash
+sudo cp check_ncpa.py /usr/local/nagios/libexec/
+sudo chown nagios:nagios /usr/local/nagios/libexec/check_ncpa.py
+sudo chmod 755 /usr/local/nagios/libexec/check_ncpa.py
+```
+
+verify installation
+
+`/usr/local/nagios/libexec/check_ncpa.py -V`
+
+Configure the NCPA API token
+
+on the host machine ( ubuntu web01)
+
+`sudo vim /usr/local/ncpa/etc/ncpa.cfg`
+
+Replace mytoken with your own secure token as we done before
+
+Now test the NCPA plugin from nagios core server:
+
+```bash
+/usr/local/nagios/libexec/check_ncpa.py \
+-H web01 \
+-t 'Nagios100@@100n' \
+-P 5693 \
+-M system/agent_version
+```
+
+Expected output:
+
+`OK: Agent_version was ['3.x.x']`
+
+Step 4. Create the Nagios command definition
+Nagios needs a command definition that tells it how to execute the NCPA plugin.
+
+Open:
+`sudo vim /usr/local/nagios/etc/objects/commands.cfg`
+
+Add:
+
+```bash
+
+define command {
+    command_name    check_ncpa
+    command_line    $USER1$/check_ncpa.py -H $HOSTADDRESS$ $ARG1$ }
+```
+
+Step 5. Store the API token securely
+Rather than writing your API token directly into the host configuration, store it as a Nagios resource macro.
+
+Open:
+
+`sudo vim /usr/local/nagios/etc/resource.cfg`
+
+Add:
+
+`$USER5$=Nagios100@@100n`
+
+Restrict access:
+
+```bash
+sudo chown nagios:nagios /usr/local/nagios/etc/resource.cfg
+sudo chmod 640 /usr/local/nagios/etc/resource.cfg
+```
+
+Step 6. Create the Ubuntu host configuration
+Create a separate configuration file for web01:
+
+`sudo vim /usr/local/nagios/etc/objects/web01.cfg`
+
+```bash
+
+
+###############################################################################
+# Ubuntu 22.04 - web01
+# Monitoring through Nagios Cross-Platform Agent (NCPA)
+###############################################################################
+
+define host {
+    use                     linux-server
+    host_name               web01
+    alias                   Ubuntu 22.04 Web Server
+    address                 192.168.56.15
+    check_period            24x7
+    check_interval          5
+    retry_interval          1
+    max_check_attempts      5
+    notification_interval   30
+    notification_period     24x7
+}
+
+###############################################################################
+# NCPA Agent Version
+###############################################################################
+
+define service {
+    use                     generic-service
+    host_name               web01
+    service_description     NCPA Agent Version
+    check_command           check_ncpa!-t '$USER5$' -P 5693 -M system/agent_version
+}
+
+###############################################################################
+# CPU Usage
+###############################################################################
+
+define service {
+    use                     generic-service
+    host_name               web01
+    service_description     CPU Usage
+    check_command           check_ncpa!-t '$USER5$' -P 5693 -M cpu/percent -q aggregate=avg -w 80 -c 90
+}
+
+###############################################################################
+# Memory Usage
+###############################################################################
+
+define service {
+    use                     generic-service
+    host_name               web01
+    service_description     Memory Usage
+    check_command           check_ncpa!-t '$USER5$' -P 5693 -M memory/virtual/percent -w 80 -c 90
+}
+
+###############################################################################
+# Disk Usage - Root Partition
+###############################################################################
+
+define service {
+    use                     generic-service
+    host_name               web01
+    service_description     Root Disk Usage
+    check_command           check_ncpa!-t '$USER5$' -P 5693 -M 'disk/logical/|/used_percent' -w 80 -c 90
+}
+
+###############################################################################
+# Process Count
+###############################################################################
+
+define service {
+    use                     generic-service
+    host_name               web01
+    service_description     Process Count
+    check_command           check_ncpa!-t '$USER5$' -P 5693 -M processes -w 300 -c 400
+}
+
+###############################################################################
+# System Uptime
+###############################################################################
+
+define service {
+    use                     generic-service
+    host_name               web01
+    service_description     System Uptime
+    check_command           check_ncpa!-t '$USER5$' -P 5693 -M system/uptime
+}
+
+```
+
+Step 7. Register the configuration file
+Nagios must know where your new host configuration file is located.
+
+Open:
+
+`sudo vim /usr/local/nagios/etc/nagios.cfg`
+
+Add:
+
+`cfg_file=/usr/local/nagios/etc/objects/web01.cfg`
+
+Validate the Nagios configuration
+
+```bash
+sudo /usr/local/nagios/bin/nagios \
+-v /usr/local/nagios/etc/nagios.cfg
+```
+
+Restart Nagios Core
+
+Verify monitoring through Nagios Web UI
+
+`http://nag01/nagios/`
 
 ---
 
