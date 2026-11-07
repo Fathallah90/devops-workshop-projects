@@ -1,0 +1,27 @@
+---
+plugin: amazon.aws.aws_ec2
+
+regions:
+  - us-east-1
+
+filters:
+  instance-state-name: running
+  tag:Name:
+    - ec2-tomcat-01
+    - ec2-mariadb-01
+    - ec2-rabbitmq-01
+    - ec2-memcached-01
+
+hostnames:
+  - instance-id
+
+# hostvars_prefix: aws_
+## This is a workaround for the issue with the ansible-2.14.0 and amazon.aws-3.1.0 versions
+# [WARNING]: Found variable using reserved name: tags
+#It is a known issue in the inventory plugin, not an error in your playbook. 
+#You can work around it by prefixing AWS inventory host variables.
+
+keyed_groups:
+  - key: ec2_tags.Name
+    prefix: name
+    separator: "_"

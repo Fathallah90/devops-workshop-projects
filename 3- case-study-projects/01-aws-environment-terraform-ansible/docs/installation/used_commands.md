@@ -1,0 +1,5 @@
+- aws sts get-caller-identity
+- aws configure list
+- terraform fmt -recursive
+- terraform validate
+- 

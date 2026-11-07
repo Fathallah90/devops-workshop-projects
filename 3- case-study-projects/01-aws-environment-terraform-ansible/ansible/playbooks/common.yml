@@ -1,0 +1,31 @@
+---
+- name: Prepare Ubuntu EC2 instances
+  hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Ensure Python 3 is installed
+      ansible.builtin.raw: |
+        if ! command -v python3 >/dev/null 2>&1; then
+          apt-get update
+          apt-get install -y python3
+        fi
+
+    - name: Gather facts
+      ansible.builtin.setup:
+
+    - name: Update APT package cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install common administration utilities
+      ansible.builtin.apt:
+        name:
+          - curl
+          - wget
+          - unzip
+          - jq
+          - net-tools
+        state: present

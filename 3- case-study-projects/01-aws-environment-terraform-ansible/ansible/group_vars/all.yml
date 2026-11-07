@@ -1,0 +1,7 @@
+---
+ansible_connection: community.aws.aws_ssm
+ansible_aws_ssm_region: us-east-1
+ansible_aws_ssm_bucket_name: ansible-ssm-339712955051-us-east-1-1794070202
+
+ansible_python_interpreter: /usr/bin/python3.10
+ansible_become: true

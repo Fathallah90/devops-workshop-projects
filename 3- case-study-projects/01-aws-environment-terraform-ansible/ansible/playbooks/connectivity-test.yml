@@ -1,0 +1,11 @@
+---
+- name: Test Ansible connectivity through AWS SSM
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Verify Ansible can execute a command
+      ansible.builtin.raw: "echo SSM_CONNECTION_OK"
+
+    - name: Display hostname
+      ansible.builtin.raw: "hostname"
