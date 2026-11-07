@@ -1,0 +1,30 @@
+
+---
+# MariaDB configuration
+mariadb_bind_address: "0.0.0.0"
+
+mariadb_database: "appdb"
+mariadb_user: "appuser"
+
+# VProfile configuration
+vprofile_db_name: "accounts"
+vprofile_db_user: "admin"
+
+# Source code
+vprofile_repo_url: "https://github.com/hkhcoder/vprofile-project.git"
+vprofile_branch: "main"
+vprofile_dir: "/opt/vprofile-project"
+vprofile_sql_file: "/opt/vprofile-project/src/main/resources/db_backup.sql"
+
+# Tomcat private IP
+# Replace with the actual private IP of your Tomcat EC2.
+tomcat_private_ip: "10.0.2.67"
+
+# Packages
+mariadb_packages:
+  - mariadb-server
+  - mariadb-client
+  - python3-pymysql
+  - git
+
+mariadb_service: mariadb

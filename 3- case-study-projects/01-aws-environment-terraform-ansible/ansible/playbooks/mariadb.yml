@@ -1,0 +1,8 @@
+
+---
+- name: Configure MariaDB and provision VProfile database
+  hosts: name_ec2_mariadb_01
+  become: true
+  gather_facts: true
+  roles:
+    - mariadb

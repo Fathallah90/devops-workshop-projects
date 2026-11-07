@@ -1,0 +1,138 @@
+
+---
+- name: Install MariaDB and dependencies
+  ansible.builtin.apt:
+    name: "{{ mariadb_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Ensure MariaDB is enabled and started
+  ansible.builtin.service:
+    name: "{{ mariadb_service }}"
+    state: started
+    enabled: true
+
+- name: Configure MariaDB network listening
+  ansible.builtin.template:
+    src: 99-vprofile.cnf.j2
+    dest: /etc/mysql/mariadb.conf.d/99-vprofile.cnf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart MariaDB
+
+- name: Apply MariaDB configuration changes
+  ansible.builtin.meta: flush_handlers
+
+# Use Ubuntu's local Unix socket authentication for root.
+# Do not create a remote root account.
+
+- name: Verify local MariaDB root access
+  community.mysql.mysql_info:
+    login_user: root
+    login_unix_socket: /run/mysqld/mysqld.sock
+    filter:
+      - version
+  register: mariadb_info
+
+- name: Display MariaDB version
+  ansible.builtin.debug:
+    var: mariadb_info.version
+
+# Application database and local application user
+
+- name: Create application database
+  community.mysql.mysql_db:
+    name: "{{ mariadb_database }}"
+    state: present
+    login_user: root
+    login_unix_socket: /run/mysqld/mysqld.sock
+
+- name: Create local application database user
+  community.mysql.mysql_user:
+    name: "{{ mariadb_user }}"
+    host: localhost
+    password: "{{ mariadb_password }}"
+    priv: "{{ mariadb_database }}.*:ALL"
+    state: present
+    login_user: root
+    login_unix_socket: /run/mysqld/mysqld.sock
+  no_log: true
+
+# VProfile database and remote application user
+
+- name: Create VProfile database
+  community.mysql.mysql_db:
+    name: "{{ vprofile_db_name }}"
+    state: present
+    login_user: root
+    login_unix_socket: /run/mysqld/mysqld.sock
+
+- name: Create VProfile database user restricted to Tomcat
+  community.mysql.mysql_user:
+    name: "{{ vprofile_db_user }}"
+    host: "{{ tomcat_private_ip }}"
+    password: "{{ vprofile_db_password }}"
+    priv: "{{ vprofile_db_name }}.*:ALL"
+    state: present
+    login_user: root
+    login_unix_socket: /run/mysqld/mysqld.sock
+  no_log: true
+
+# VProfile source code
+
+- name: Clone VProfile source code
+  ansible.builtin.git:
+    repo: "{{ vprofile_repo_url }}"
+    dest: "{{ vprofile_dir }}"
+    version: "{{ vprofile_branch }}"
+    single_branch: true
+    update: false
+
+- name: Verify VProfile SQL dump exists
+  ansible.builtin.stat:
+    path: "{{ vprofile_sql_file }}"
+  register: vprofile_sql
+
+- name: Fail if SQL dump does not exist
+  ansible.builtin.assert:
+    that:
+      - vprofile_sql.stat.exists
+      - vprofile_sql.stat.isreg
+    fail_msg: "VProfile database dump not found."
+
+# Import only if the database has no tables
+
+- name: Check existing VProfile tables
+  community.mysql.mysql_query:
+    login_user: root
+    login_unix_socket: /run/mysqld/mysqld.sock
+    query: >
+      SELECT COUNT(*) AS table_count
+      FROM information_schema.tables
+      WHERE table_schema = '{{ vprofile_db_name }}'
+      AND table_type = 'BASE TABLE'
+  register: vprofile_table_count
+  changed_when: false
+
+- name: Import VProfile SQL dump
+  community.mysql.mysql_db:
+    name: "{{ vprofile_db_name }}"
+    state: import
+    target: "{{ vprofile_sql_file }}"
+    login_user: root
+    login_unix_socket: /run/mysqld/mysqld.sock
+  when: >
+    vprofile_table_count.query_result[0][0].table_count | int == 0
+
+# Final verification
+
+- name: Verify MariaDB service
+  ansible.builtin.command:
+    cmd: systemctl is-active mariadb
+  changed_when: false
+
+- name: Display successful provisioning
+  ansible.builtin.debug:
+    msg: "MariaDB and VProfile database provisioning completed successfully."
