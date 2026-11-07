@@ -1,0 +1,6 @@
+# RabbitMQ network configuration
+
+listeners.tcp.default = {{ rabbitmq_bind_address }}:{{ rabbitmq_port }}
+
+# Disable the default guest account for remote connections
+loopback_users.guest = true

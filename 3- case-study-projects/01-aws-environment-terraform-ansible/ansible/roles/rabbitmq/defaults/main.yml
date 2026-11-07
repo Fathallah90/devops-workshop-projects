@@ -1,0 +1,37 @@
+---
+# RabbitMQ configuration
+
+rabbitmq_service_name: rabbitmq-server
+
+rabbitmq_app_user: test
+rabbitmq_app_vhost: /app
+
+rabbitmq_port: 5672
+
+# Bind RabbitMQ to the EC2 private interface
+rabbitmq_bind_address: "{{ rabbitmq_private_ip }}"
+# RabbitMQ official repository for Ubuntu 22.04
+rabbitmq_repository_distribution: jammy
+
+rabbitmq_signing_key_url: "https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA"
+
+rabbitmq_signing_key_path: /usr/share/keyrings/com.rabbitmq.team.gpg
+
+rabbitmq_erlang_packages:
+  - erlang-base
+  - erlang-asn1
+  - erlang-crypto
+  - erlang-eldap
+  - erlang-ftp
+  - erlang-inets
+  - erlang-mnesia
+  - erlang-os-mon
+  - erlang-parsetools
+  - erlang-public-key
+  - erlang-runtime-tools
+  - erlang-snmp
+  - erlang-ssl
+  - erlang-syntax-tools
+  - erlang-tftp
+  - erlang-tools
+  - erlang-xmerl

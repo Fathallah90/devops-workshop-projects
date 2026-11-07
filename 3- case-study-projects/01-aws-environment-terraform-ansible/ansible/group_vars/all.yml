@@ -5,3 +5,17 @@ ansible_aws_ssm_bucket_name: ansible-ssm-339712955051-us-east-1-1794070202
 
 ansible_python_interpreter: /usr/bin/python3.10
 ansible_become: true
+
+# AWS EC2 private IP addresses - dynamically discovered
+
+mariadb_private_ip: >-
+  {{ hostvars[groups['name_ec2_mariadb_01'][0]]['private_ip_address'] }}
+
+rabbitmq_private_ip: >-
+  {{ hostvars[groups['name_ec2_rabbitmq_01'][0]]['private_ip_address'] }}
+
+memcached_private_ip: >-
+  {{ hostvars[groups['name_ec2_memcached_01'][0]]['private_ip_address'] }}
+
+tomcat_private_ip: >-
+  {{ hostvars[groups['name_ec2_tomcat_01'][0]]['private_ip_address'] }}

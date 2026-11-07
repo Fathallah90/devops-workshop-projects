@@ -1,0 +1,71 @@
+
+---
+- name: Verify supported operating system
+  ansible.builtin.assert:
+    that:
+      - ansible_distribution == "Ubuntu"
+      - ansible_distribution_major_version == "22"
+    fail_msg: "This role supports Ubuntu 22.04 only."
+
+- name: Update APT package cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install Memcached and dependencies
+  ansible.builtin.apt:
+    name:
+      - memcached
+      - libmemcached-tools
+      - iproute2
+    state: present
+
+- name: Configure Memcached listening address
+  ansible.builtin.lineinfile:
+    path: /etc/memcached.conf
+    regexp: '^\s*-l\s+'
+    line: "-l {{ ansible_default_ipv4.address }}"
+    backup: true
+  notify: Restart Memcached
+
+- name: Disable Memcached UDP
+  ansible.builtin.lineinfile:
+    path: /etc/memcached.conf
+    regexp: '^\s*-U\s+'
+    line: "-U 0"
+    backup: true
+  notify: Restart Memcached
+
+- name: Ensure Memcached is enabled and started
+  ansible.builtin.service:
+    name: memcached
+    state: started
+    enabled: true
+
+- name: Apply pending configuration changes
+  ansible.builtin.meta: flush_handlers
+
+- name: Verify Memcached service status
+  ansible.builtin.command:
+    cmd: systemctl is-active memcached
+  register: memcached_service_status
+  changed_when: false
+  failed_when: memcached_service_status.stdout != "active"
+
+- name: Verify Memcached listening port
+  ansible.builtin.command:
+    cmd: ss -lntH
+  register: memcached_listening_ports
+  changed_when: false
+  failed_when: >
+    (ansible_default_ipv4.address ~ ':11211')
+    not in memcached_listening_ports.stdout
+
+- name: Display Memcached service information
+  ansible.builtin.debug:
+    msg:
+      - "Memcached installation completed successfully."
+      - "Private IP: {{ ansible_default_ipv4.address }}"
+      - "Listening port: 11211"
+      - "UDP: Disabled"
+      - "Service: {{ memcached_service_status.stdout }}"

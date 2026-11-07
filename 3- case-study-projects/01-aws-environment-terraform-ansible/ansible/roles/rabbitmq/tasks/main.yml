@@ -1,0 +1,123 @@
+---
+- name: Validate target operating system
+  ansible.builtin.assert:
+    that:
+      - ansible_distribution == "Ubuntu"
+      - ansible_distribution_version == "22.04"
+      - ansible_architecture == "x86_64"
+    fail_msg: "This RabbitMQ role requires Ubuntu 22.04 on x86_64."
+
+- name: Install required dependencies
+  ansible.builtin.apt:
+    name:
+      - curl
+      - gnupg
+      - apt-transport-https
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Download RabbitMQ repository signing key
+  ansible.builtin.get_url:
+    url: "{{ rabbitmq_signing_key_url }}"
+    dest: /tmp/rabbitmq-signing-key.asc
+    mode: "0644"
+
+- name: Install RabbitMQ repository signing key
+  ansible.builtin.command:
+    cmd: >
+      gpg --dearmor --yes
+      --output {{ rabbitmq_signing_key_path }}
+      /tmp/rabbitmq-signing-key.asc
+    creates: "{{ rabbitmq_signing_key_path }}"
+
+- name: Configure RabbitMQ APT repositories
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/rabbitmq.list
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      deb [arch=amd64 signed-by={{ rabbitmq_signing_key_path }}] https://deb1.rabbitmq.com/rabbitmq-erlang/ubuntu/{{ rabbitmq_repository_distribution }} {{ rabbitmq_repository_distribution }} main
+      deb [arch=amd64 signed-by={{ rabbitmq_signing_key_path }}] https://deb2.rabbitmq.com/rabbitmq-erlang/ubuntu/{{ rabbitmq_repository_distribution }} {{ rabbitmq_repository_distribution }} main
+
+      deb [arch=amd64 signed-by={{ rabbitmq_signing_key_path }}] https://deb1.rabbitmq.com/rabbitmq-server/ubuntu/{{ rabbitmq_repository_distribution }} {{ rabbitmq_repository_distribution }} main
+      deb [arch=amd64 signed-by={{ rabbitmq_signing_key_path }}] https://deb2.rabbitmq.com/rabbitmq-server/ubuntu/{{ rabbitmq_repository_distribution }} {{ rabbitmq_repository_distribution }} main
+
+- name: Update APT package cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install Erlang and RabbitMQ Server
+  ansible.builtin.apt:
+    name: "{{ rabbitmq_erlang_packages + ['rabbitmq-server'] }}"
+    state: present
+
+- name: Configure RabbitMQ listener
+  ansible.builtin.template:
+    src: rabbitmq.conf.j2
+    dest: /etc/rabbitmq/rabbitmq.conf
+    owner: root
+    group: rabbitmq
+    mode: "0640"
+  notify: Restart RabbitMQ
+
+- name: Enable and start RabbitMQ
+  ansible.builtin.systemd:
+    name: "{{ rabbitmq_service_name }}"
+    enabled: true
+    state: started
+
+- name: Apply pending RabbitMQ configuration changes
+  ansible.builtin.meta: flush_handlers
+
+- name: Wait for RabbitMQ AMQP port
+  ansible.builtin.wait_for:
+    host: "{{ rabbitmq_bind_address }}"
+    port: "{{ rabbitmq_port }}"
+    state: started
+    timeout: 60
+
+- name: Ensure RabbitMQ virtual host exists
+  community.rabbitmq.rabbitmq_vhost:
+    name: "{{ rabbitmq_app_vhost }}"
+    state: present
+
+- name: Create RabbitMQ application user
+  community.rabbitmq.rabbitmq_user:
+    user: "{{ rabbitmq_app_user }}"
+    password: "{{ vault_rabbitmq_app_password }}"
+    update_password: always
+    permissions:
+      - vhost: "{{ rabbitmq_app_vhost }}"
+        configure_priv: ".*"
+        read_priv: ".*"
+        write_priv: ".*"
+    state: present
+
+- name: Verify RabbitMQ service is running
+  ansible.builtin.command:
+    cmd: rabbitmq-diagnostics -q ping
+  changed_when: false
+
+- name: Display RabbitMQ users
+  ansible.builtin.command:
+    cmd: rabbitmqctl list_users
+  register: rabbitmq_users
+  changed_when: false
+
+- name: Display RabbitMQ virtual host permissions
+  ansible.builtin.command:
+    cmd: "rabbitmqctl list_permissions -p {{ rabbitmq_app_vhost }}"
+  register: rabbitmq_permissions
+  changed_when: false
+
+- name: Display RabbitMQ validation results
+  ansible.builtin.debug:
+    msg:
+      - "RabbitMQ service is running."
+      - "Application user: {{ rabbitmq_app_user }}"
+      - "Application virtual host: {{ rabbitmq_app_vhost }}"
+      - "AMQP port: {{ rabbitmq_port }}"
+      - "{{ rabbitmq_users.stdout_lines }}"
+      - "{{ rabbitmq_permissions.stdout_lines }}"

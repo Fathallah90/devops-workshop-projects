@@ -1,0 +1,37 @@
+---
+# Application source
+source_repo: "https://github.com/hkhcoder/vprofile-project.git"
+source_revision: "main"
+source_dir: "/opt/vprofile-project"
+
+# Application artifact
+war_name: "vprofile-v2.war"
+war_source: "{{ source_dir }}/target/{{ war_name }}"
+war_destination: "/var/lib/tomcat9/webapps/ROOT.war"
+
+# Java and Tomcat
+java_package: "openjdk-11-jdk"
+maven_package: "maven"
+tomcat_package: "tomcat9"
+tomcat_service: "tomcat9"
+
+java_home: "/usr/lib/jvm/java-11-openjdk-amd64"
+
+# Database connection
+db_host: "{{ mariadb_private_ip }}"
+db_port: 3306
+db_name: "accounts"
+
+# Memcached connection
+cache_host: "{{ memcached_private_ip }}"
+cache_port: 11211
+
+# RabbitMQ connection
+queue_host: "{{ rabbitmq_private_ip }}"
+queue_port: 5672
+
+# Tomcat configuration
+tomcat_java_opts: "-Djava.awt.headless=true -Xms128m -Xmx384m -XX:+UseSerialGC"
+
+# Application health check
+application_health_url: "http://127.0.0.1:8080/login"

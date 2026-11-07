@@ -14,7 +14,7 @@ vprofile_sql_file: "/opt/vprofile-project/src/main/resources/db_backup.sql"
 
 # Tomcat private IP
 # Replace with the actual private IP of your Tomcat EC2.
-tomcat_private_ip: "10.0.2.67"
+tomcat_private_ip: "{{ rabbitmq_private_ip }}"
 
 mariadb_packages:
   - mariadb-server

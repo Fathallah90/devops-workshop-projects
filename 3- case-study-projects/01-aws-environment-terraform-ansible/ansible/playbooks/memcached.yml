@@ -1,0 +1,9 @@
+
+---
+- name: Install and configure Memcached server
+  hosts: name_ec2_memcached_01
+  become: true
+  gather_facts: true
+
+  roles:
+    - memcached

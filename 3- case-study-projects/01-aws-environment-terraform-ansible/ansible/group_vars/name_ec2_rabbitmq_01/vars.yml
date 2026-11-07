@@ -1,0 +1,4 @@
+---
+rabbitmq_app_user: test
+rabbitmq_app_vhost: /app
+rabbitmq_port: 5672

@@ -1,0 +1,8 @@
+---
+- name: Configure RabbitMQ Server
+  hosts: name_ec2_rabbitmq_01
+  become: true
+  gather_facts: true
+
+  roles:
+    - rabbitmq
