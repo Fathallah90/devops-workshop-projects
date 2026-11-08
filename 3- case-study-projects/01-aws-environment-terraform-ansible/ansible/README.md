@@ -107,7 +107,9 @@ Private subnet default route (0.0.0.0/0)
 ```
 
 The ALB-to-Tomcat connection uses private VPC routing. It does **not**
-pass through the NAT Gateway. The NAT Gateway is for outbound
+pass through the NAT Gateway.
+
+The NAT Gateway is for outbound
 connections initiated by private instances, such as downloading Ubuntu
 packages or reaching public AWS service endpoints.
 
@@ -449,6 +451,15 @@ ansible/
 ├── aws_ec2.yml
 ├── requirements.yml
 ├── group_vars/
+│   |── name_ec2_mariadb_01/
+|   |    └── vars.yml
+|   |    └── vault.yml
+│   |── name_ec2_rabbitmq_01/
+|   |    └── vars.yml
+|   |    └── rabbitmq.yml
+│   |── name_ec2_tomcat_01/
+|   |    └── vars.yml
+|   |    └── vault.yml
 │   └── all.yml
 ├── playbooks/
 │   ├── connectivity-test.yml
@@ -467,15 +478,29 @@ ansible/
     │   ├── handlers/
     │   │   └── main.yml
     │   └── templates/
+    │       └── application.properties.j2
     ├── mariadb/
-    │   └── tasks/
-    │       └── main.yml
+    │   ├── tasks/
+    │   │   └── main.yml
+    │   ├── handlers/
+    │   │   └── main.yml
+    │   └── templates/
+    │       └── 99-vprofile.cnf.j2
     ├── rabbitmq/
-    │   └── tasks/
-    │       └── main.yml
+    │   ├── tasks/
+    │   │   └── main.yml
+    │   ├── defaults/
+    │   │   └── main.yml
+    │   ├── handlers/
+    │   │   └── main.yml
+    │   └── templates/
+    │       └── rabbitmq.conf.j2
     └── memcached/
-        └── tasks/
-            └── main.yml
+    │   ├── tasks/
+    │   │   └── main.yml
+    │   ├── handlers/
+    │   │   └── main.yml
+    │   └── templates/
 ```
 
 Create the directories:
@@ -908,11 +933,15 @@ need to be implemented and tested.
 
 ### 13.6 Run each playbook
 
+Make sure to run in ordering
+
+DB >> RabbitMQ >> Memcached >> Tomcat
+
 ``` bash
-ansible-playbook playbooks/tomcat.yml
 ansible-playbook playbooks/mariadb.yml
 ansible-playbook playbooks/rabbitmq.yml
 ansible-playbook playbooks/memcached.yml
+ansible-playbook playbooks/tomcat.yml
 ```
 
 Run a specific playbook against one instance by using `--limit` with its
