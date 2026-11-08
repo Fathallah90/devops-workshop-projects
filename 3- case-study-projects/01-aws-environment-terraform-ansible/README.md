@@ -1,5 +1,7 @@
 # End-to-End AWS Environment Provisioning using Terraform and Ansible
 
+![alt text](<AWS Network Diagram.drawio.png>)
+
 ## Project Overview
 
 This project demonstrates the end-to-end provisioning and configuration of an enterprise-style AWS environment using **Terraform** and **Ansible**.
@@ -171,42 +173,71 @@ aws-environment-terraform-ansible/
 │   ├── providers.tf
 │   ├── versions.tf
 │   ├── variables.tf
-│   ├── terraform.tfvars.example
-│   ├── main.tf
+│   ├── terraform.tfvars
+│   ├── ami.tf
 │   ├── vpc.tf
-│   ├── subnets.tf
-│   ├── internet-gateway.tf
-│   ├── nat-gateway.tf
-│   ├── route-tables.tf
+│   ├── network.tf
 │   ├── security-groups.tf
 │   ├── iam.tf
-│   ├── ec2.tf
-│   ├── alb.tf
-│   └── outputs.tf
+│   ├── ec2-instances.tf
+│   ├── key-pair.tf
+│   └── alb.tf
 │
-└── ansible/
-    ├── ansible.cfg
-    ├── aws_ec2.yml
-    │
-    ├── group_vars/
-    │   └── all/
-    │       ├── vars.yml
-    │       └── vault.yml
-    │
-    ├── playbooks/
-    │   ├── connectivity-test.yml
-    │   ├── common.yml
-    │   ├── mariadb.yml
-    │   ├── rabbitmq.yml
-    │   ├── memcached.yml
-    │   └── tomcat.yml
-    │
-    └── roles/
-        ├── common/
-        ├── mariadb/
-        ├── rabbitmq/
-        ├── memcached/
-        └── tomcat/
+├── ansible/
+|   ├── ansible.cfg
+|   ├── aws_ec2.yml
+|   ├── requirements.yml
+|   ├── group_vars/
+|   │   |── name_ec2_mariadb_01/
+|   |   |    └── vars.yml
+|   |   |    └── vault.yml
+|   │   |── name_ec2_rabbitmq_01/
+|   |   |    └── vars.yml
+|   |   |    └── rabbitmq.yml
+|   │   |── name_ec2_tomcat_01/
+|   |   |    └── vars.yml
+|   |   |    └── vault.yml
+|   │   └── all.yml
+|   ├── playbooks/
+|   │   ├── connectivity-test.yml
+|   │   ├── common.yml
+|   │   ├── tomcat.yml
+|   │   ├── mariadb.yml
+|   │   ├── rabbitmq.yml
+|   │   └── memcached.yml
+|   └── roles/
+|       ├── common/
+|       │   └── tasks/
+|       │       └── main.yml
+|       ├── tomcat/
+|       │   ├── tasks/
+|       │   │   └── main.yml
+|       │   ├── handlers/
+|       │   │   └── main.yml
+|       │   └── templates/
+|       │       └── application.properties.j2
+|       ├── mariadb/
+|       │   ├── tasks/
+|       │   │   └── main.yml
+|       │   ├── handlers/
+|       │   │   └── main.yml
+|       │   └── templates/
+|       │       └── 99-vprofile.cnf.j2
+|       ├── rabbitmq/
+|       │   ├── tasks/
+|       │   │   └── main.yml
+|       │   ├── defaults/
+|       │   │   └── main.yml
+|       │   ├── handlers/
+|       │   │   └── main.yml
+|       │   └── templates/
+|       │       └── rabbitmq.conf.j2
+|       └── memcached/
+|       │   ├── tasks/
+|       │   │   └── main.yml
+|       │   ├── handlers/
+|       │   │   └── main.yml
+|       │   └── templates/
 ```
 
 *Note: The structure represents the logical organization of the project; filenames can be adjusted to match the final repository.*

@@ -1,1 +1,0 @@
-![alt text](<AWS Network Diagram.drawio.png>)

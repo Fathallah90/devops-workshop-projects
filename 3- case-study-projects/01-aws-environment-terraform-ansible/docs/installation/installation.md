@@ -12,28 +12,16 @@ let's design the netwoek traffic flow to check what you need on cloud
 
 ## Onprem Network Diagram
 
-![alt text](image-1.png)
+![alt text](../architecture/on%20prem.png)
 
 ## AWS Network Diagram
 
 let use the onprem diagram and design the AWS Cloud diagram
 
-![alt text](image-2.png)
 
-Onprem Resources >>> AWS Cloud Resources
-Datacenter >>> VPC
-Datacenter Geographic Location >>> Availability Zone
-Intenet Firewall >>> IGW
-Reverse Proxy >>> ALB
-Nginx Web Server >>> Nginx EC2
-MariaDB Server >>> MariaDB EC2
-Mecached Server >>> Memcached EC2
-RabbitMQ Server >>> RabbitMQ Server
-Public DMZ >>> Public Subnet
-Private DMZ >>> Private Subent
-Router >>> Implied Router
-Public Subnet Routing Table
-Private Subnet Routing Table
+
+![alt text](../architecture/AWS%20Network%20Diagram.drawio.png)
+
 
 Phase 1 – Terraform and AWS preparation
 Start here
