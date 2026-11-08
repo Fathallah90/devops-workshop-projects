@@ -1,6 +1,6 @@
 when installing zabbix i got the below error
 
-![alt text](image.png)
+![alt text](../screenshots/issue_01.png)
 
 the reason is because, The conflict happens because:
 - Zabbix 7.4 requires zabbix-web version 7.4.16.

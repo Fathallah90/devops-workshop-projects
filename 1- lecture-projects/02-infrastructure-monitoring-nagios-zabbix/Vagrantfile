@@ -1,0 +1,32 @@
+Vagrant.configure("2") do |config|
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = true
+
+    ### Zabbix VM ###
+  config.vm.define "zbx01" do |zbx01|
+    zbx01.vm.box = "Golden_CentOS_Final"
+    zbx01.vm.hostname = "zbx01"
+    zbx01.vm.network "private_network", ip: "192.168.56.16"
+    zbx01.vm.provider "virtualbox" do |vb|
+      vb.gui = true
+      vb.memory = "4096"
+      vb.name = "Zabbix"
+    end
+    # Zabbix provisioning
+    #zbx01.vm.provision "shell", path: "./scripts/Zabbix.sh"
+  end
+
+    ### Nagios VM ###
+  config.vm.define "nag01" do |nag01|
+    nag01.vm.box = "Golden_CentOS_Final"
+    nag01.vm.hostname = "nag01"
+    nag01.vm.network "private_network", ip: "192.168.56.17"
+    nag01.vm.provider "virtualbox" do |vb|
+      vb.gui = true
+      vb.memory = "4096"
+      vb.name = "Nagios"
+    end
+    # Nagios provisioning
+    #nag01.vm.provision "shell", path: "./scripts/Nagios.sh"
+  end
+end
