@@ -32,4 +32,5 @@ crash.*.log
 *.tfvars
 *.tfvars.json
 
+**/.vscode/
 /Docker-Harbor/Docker-harbor.sh
