@@ -1,36 +1,51 @@
-# Vagrant state directories anywhere in the repository
+# ==========================================
+# Vagrant
+# ==========================================
 **/.vagrant/
 
-# Secrets
-.env
-*.pem
-*.key
-
-# Logs
-*.log
-
+# ==========================================
 # Terraform
+# ==========================================
 **/.terraform/
 *.tfstate
 *.tfstate.*
-
-# Ruby
-*.ruby-version
-
-# Terraform working directory
-**/.terraform/*
-
-# Terraform state
-*.tfstate
-*.tfstate.*
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+!*.tfvars.json.example
 
 # Terraform crash logs
 crash.log
 crash.*.log
 
-# Sensitive variable files
-*.tfvars
-*.tfvars.json
+# ==========================================
+# Secrets and credentials
+# ==========================================
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
 
+# ==========================================
+# Logs
+# ==========================================
+*.log
+
+# ==========================================
+# IDE
+# ==========================================
 **/.vscode/
-/Docker-Harbor/Docker-harbor.sh
+
+# ==========================================
+# Ruby
+# ==========================================
+*.ruby-version
+
+# ==========================================
+# Operating system
+# ==========================================
+.DS_Store
+Thumbs.db
+desktop.ini
