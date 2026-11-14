@@ -1,51 +1,41 @@
-# ==========================================
-# Vagrant
-# ==========================================
-**/.vagrant/
 
 # ==========================================
-# Terraform
+# Secrets and Credentials
 # ==========================================
-**/.terraform/
-*.tfstate
-*.tfstate.*
-*.tfvars
-*.tfvars.json
-!*.tfvars.example
-!*.tfvars.json.example
 
-# Terraform crash logs
-crash.log
-crash.*.log
-
-# ==========================================
-# Secrets and credentials
-# ==========================================
+# Environment variables
 .env
 .env.*
 !.env.example
 !.env.*.example
+
+# Private keys and certificates
 *.pem
 *.key
+*.p12
+*.pfx
 
 # ==========================================
-# Logs
+# IDE and Development Tools
 # ==========================================
-*.log
+
+.vscode/
+.idea/
 
 # ==========================================
-# IDE
+# Temporary Files
 # ==========================================
-**/.vscode/
+
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
 
 # ==========================================
-# Ruby
+# Operating System
 # ==========================================
-*.ruby-version
 
-# ==========================================
-# Operating system
-# ==========================================
 .DS_Store
 Thumbs.db
 desktop.ini

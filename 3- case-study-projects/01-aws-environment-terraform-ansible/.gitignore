@@ -1,0 +1,102 @@
+# ==========================================
+# Terraform - Working Directories
+# ==========================================
+
+**/.terraform/
+
+# Terraform state
+*.tfstate
+*.tfstate.*
+
+# Terraform variables
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+!*.tfvars.json.example
+
+# Terraform plans
+*.tfplan
+*.plan
+
+# Terraform crash logs
+crash.log
+crash.*.log
+
+# Terraform override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform CLI configuration
+.terraformrc
+terraform.rc
+
+# Keep .terraform.lock.hcl tracked
+
+# ==========================================
+# Ansible - Generated Files
+# ==========================================
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Ansible retry files
+*.retry
+
+# Ansible logs
+ansible.log
+
+# ==========================================
+# Ansible - Sensitive Data
+# ==========================================
+
+# Local inventory overrides
+inventory.local
+inventory.local.*
+
+# Vault password files
+.vault_password
+.vault_password.*
+vault-password-file
+
+# ==========================================
+# AWS Credentials
+# ==========================================
+
+.aws/
+credentials
+
+# ==========================================
+# Environment Variables
+# ==========================================
+
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# ==========================================
+# Private Keys and Certificates
+# ==========================================
+
+*.pem
+*.key
+*.p12
+*.pfx
+
+# ==========================================
+# Python Virtual Environments
+# ==========================================
+
+.venv/
+venv/
+ENV/
+
+# ==========================================
+# IDE
+# ==========================================
+
+.vscode/
+.idea/
